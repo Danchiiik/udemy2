@@ -69,7 +69,7 @@ ROOT_URLCONF = 'udemy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': []   ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -172,4 +172,6 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 BROKER_URL = 'redis://127.0.0.1:6379/0'
 BROKER_TRANSPORT = 'redis'
 
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
 

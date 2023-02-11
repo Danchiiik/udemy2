@@ -9,3 +9,4 @@ django-filter
 drf-yasg
 celery[redis]
 django-allauth
+stripe
