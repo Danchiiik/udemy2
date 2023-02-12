@@ -74,9 +74,8 @@ class ForgotRasswordApiView(APIView):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.send_code()
-        return Response('We have sent you a code')
+        return Response('We have sent you an email')
   
-    
     
 class ForgotPasswordFinishApiview(APIView):
     def post(self, request):

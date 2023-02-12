@@ -48,8 +48,6 @@ class CustomUser(AbstractUser):
         ('другое', 'другое')
     )
     
-    
-    
     username = None
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=225)
@@ -61,9 +59,11 @@ class CustomUser(AbstractUser):
     activation_code = models.CharField(max_length=40, blank=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    
+    password_reset_requested_at = models.DateTimeField(null=True, blank=True)
+
 
     objects = UserManager()
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from applications.account.tasks import send_act_code, send_mentor_act_code, send_password_confirm_code
 
@@ -101,17 +102,18 @@ class ForgotPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError('No such user with this email')
         return email
     
+    
     def send_code(self):
         email = self.validated_data.get('email')
         user = User.objects.get(email=email)
-        user.create_act_code()
+        user.password_reset_requested_at = timezone.now()
         user.save()
-        send_password_confirm_code.delay(user.email, user.activation_code)
+        send_password_confirm_code.delay(user.email)
         
         
 class ForgotPasswordFinishSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    code = serializers.CharField(required=True)
+    # code = serializers.CharField(required=True)
     password = serializers.CharField(required=True, min_length = 6)
     password2 = serializers.CharField(required=True, min_length = 6)
     
@@ -120,12 +122,14 @@ class ForgotPasswordFinishSerializer(serializers.Serializer):
             raise serializers.ValidationError('No such user with this email')
         return email
     
-    def validate_code(self, code):
-        if not User.objects.filter(activation_code=code).exists():
-            raise serializers.ValidationError('Wrong code')
-        return code
-    
     def validate(self, attrs):
+        email = attrs.get('email')
+        user = User.objects.get(email=email)
+
+        time_since_request = timezone.now() - user.password_reset_requested_at
+        if time_since_request.total_seconds() > 24 * 60 * 60:
+            raise serializers.ValidationError('Password reset link has expired')
+        
         p1 = attrs.get('password')
         p2 = attrs.get('password2')
         if p1 != p2:
@@ -137,5 +141,21 @@ class ForgotPasswordFinishSerializer(serializers.Serializer):
         password = self.validated_data.get('password')
         user = User.objects.get(email=email)
         user.set_password(password)
-        user.activation_code = ''
-        user.save()    
+        user.password_reset_requested_at = None
+        user.save()   
+        
+        
+    # def send_code(self):
+    #     email = self.validated_data.get('email')
+    #     user = User.objects.get(email=email)
+    #     user.create_activation_code()
+    #     user.save()
+    #     send_password_confirm_code.delay(user.email, user.activation_code)
+    
+        
+         
+    # def validate_code(self, code):
+    #     if not User.objects.filter(activation_code=code).exists():
+    #         raise serializers.ValidationError('Wrong code')
+    #     return code
+    

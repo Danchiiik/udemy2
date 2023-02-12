@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from applications.product.models import Product
+from applications.product.models import Course
 
 User = get_user_model()
 
@@ -13,7 +13,7 @@ class Order(models.Model):
         ('canceled', 'canceled')
     )
     
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')
+    product = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='orders')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     status = models.CharField(max_length=50, choices=STATUS, null=True, blank=True)
     is_confirm = models.BooleanField(default=False)

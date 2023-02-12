@@ -1,7 +1,6 @@
-from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from applications.feedback.views import FeedbackMixin
-from applications.product.models import Product
+from applications.product.models import Course
 from applications.product.permissions import IsFeedbackOwner, IsProductOwnerOrReadOnly
 
 
@@ -10,7 +9,7 @@ from applications.product.serializers import ProductSerializer
 
 class ProductViewSet(ModelViewSet, FeedbackMixin):
     serializer_class = ProductSerializer
-    queryset = Product.objects.all()
+    queryset = Course.objects.all()
     permission_classes = [IsProductOwnerOrReadOnly]
     
     def perform_create(self, serializer):

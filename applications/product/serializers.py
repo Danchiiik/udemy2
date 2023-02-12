@@ -3,19 +3,19 @@ from django.db.models import Avg
 from applications.feedback.models import Comment
 from applications.feedback.serializers import CommentSerializer
 
-from applications.product.models import Product
+from applications.product.models import Course
 
 class ProductSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.email')
     
     class Meta:
-        model = Product
+        model = Course
         fields = '__all__'
         
         
     def create(self, validated_data):
         # request = self.context.get('request')
-        product = Product.objects.create(**validated_data)
+        product = Course.objects.create(**validated_data)
         return product
     
     def to_representation(self, instance):
