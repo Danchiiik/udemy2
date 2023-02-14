@@ -33,6 +33,7 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
     
+    
 
 class CustomUser(AbstractUser):
     AUDIENCE = (
@@ -73,3 +74,25 @@ class CustomUser(AbstractUser):
         
     def __str__(self):
         return str(self.email)
+    
+    
+    
+    
+class Profile(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='profiles')
+    competence = models.CharField(max_length=100)
+    language = models.CharField(max_length=20)
+    site_url = models.CharField(max_length=50, null=True, blank=True)
+    twitter_url = models.CharField(max_length=50, null=True, blank=True)
+    facebook_url = models.CharField(max_length=50, null=True, blank=True)
+    linkedin_url = models.CharField(max_length=50, null=True, blank=True)
+    youtube_url = models.CharField(max_length=50, null=True, blank=True)
+    image = models.CharField(max_length=150, null=True, blank=True)
+    is_hidden = models.BooleanField(default=False)
+    is_hidden_courses = models.BooleanField(default=False)
+    promotions = models.BooleanField(default=False)
+    mentor_ads = models.BooleanField(default=False)
+    email_ads = models.BooleanField(default=False)
+    
+    def __str__(self) -> str:
+        return self.user.first_name

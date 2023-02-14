@@ -4,12 +4,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import mixins, GenericViewSet
+from applications.account.models import Profile
+from applications.account.permissions import IsProfileOwner
 
 User = get_user_model()
 
 from applications.account.serializers import ( 
         ChangePasswordSerializer, ForgotPasswordFinishSerializer, ForgotPasswordSerializer, 
-        MentorSerializer, UserSerializer
+        MentorSerializer, ProfileSerializer, UserSerializer
 )
 
 
@@ -83,3 +86,16 @@ class ForgotPasswordFinishApiview(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.set_new_password()
         return Response('Your password is updated successfully')
+    
+    
+    
+class ProfileViewSet(mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsProfileOwner]
+    
+    

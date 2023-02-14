@@ -1,10 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
+from rest_framework.routers import DefaultRouter
 from applications.account.views import ( 
         ChangePasswordApiView, ForgotPasswordFinishApiview, ForgotRasswordApiView, 
-        MentorActivationApiView, MentorRegisterApiView, UserRegisterApiView, UserActivationApiView
+        MentorActivationApiView, MentorRegisterApiView, ProfileViewSet, UserRegisterApiView, UserActivationApiView
 )
+
+router = DefaultRouter()
+router.register('', ProfileViewSet)
+
 
 urlpatterns = [
     path('register/', UserRegisterApiView.as_view()),
@@ -16,4 +20,5 @@ urlpatterns = [
     path('change_password/', ChangePasswordApiView.as_view()),
     path('forgot_password/', ForgotRasswordApiView.as_view()),
     path('forgot_password_finish/', ForgotPasswordFinishApiview.as_view()), 
+    path('profile/', include(router.urls))
 ]

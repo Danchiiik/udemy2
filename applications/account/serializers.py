@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from applications.account.models import Profile
 
 from applications.account.tasks import send_act_code, send_mentor_act_code, send_password_confirm_code
 
@@ -113,7 +114,6 @@ class ForgotPasswordSerializer(serializers.Serializer):
         
 class ForgotPasswordFinishSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    # code = serializers.CharField(required=True)
     password = serializers.CharField(required=True, min_length = 6)
     password2 = serializers.CharField(required=True, min_length = 6)
     
@@ -127,7 +127,7 @@ class ForgotPasswordFinishSerializer(serializers.Serializer):
         user = User.objects.get(email=email)
 
         time_since_request = timezone.now() - user.password_reset_requested_at
-        if time_since_request.total_seconds() > 24 * 60 * 60:
+        if time_since_request.total_seconds() > 20:
             raise serializers.ValidationError('Password reset link has expired')
         
         p1 = attrs.get('password')
@@ -145,17 +145,12 @@ class ForgotPasswordFinishSerializer(serializers.Serializer):
         user.save()   
         
         
-    # def send_code(self):
-    #     email = self.validated_data.get('email')
-    #     user = User.objects.get(email=email)
-    #     user.create_activation_code()
-    #     user.save()
-    #     send_password_confirm_code.delay(user.email, user.activation_code)
     
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user  = serializers.ReadOnlyField(source='user.email')
+    class Meta:
+        model = Profile
+        fields = '__all__'
         
-         
-    # def validate_code(self, code):
-    #     if not User.objects.filter(activation_code=code).exists():
-    #         raise serializers.ValidationError('Wrong code')
-    #     return code
-    
+        
