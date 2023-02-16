@@ -1,4 +1,4 @@
-from applications.feedback.models import Comment, Favourite, Like, Rating
+from applications.feedback.models import Comment, Favourite, Like, LikeComment, Rating
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -19,7 +19,19 @@ class FeedbackMixin:
             return Response({'msg': 'comment added'}, status=status.HTTP_201_CREATED)
         except MultiValueDictKeyError:
             return Response({'msg': 'field comment is required'}, status=status.HTTP_400_BAD_REQUEST)
-        
+    
+    def update_comment(self, request, pk=None):
+        try:
+            comment_obj = Comment.objects.get(pk=pk)
+            if comment_obj.owner != request.user:
+                return Response({'msg': 'you are not authorized to update this comment'}, status=status.HTTP_403_FORBIDDEN)
+            comment = request.data.get('comment', comment_obj.comment)
+            comment_obj.comment = comment
+            comment_obj.save()
+            return Response({'msg': 'comment updated'}, status=status.HTTP_200_OK)
+        except Comment.DoesNotExist:
+            return Response({'msg': 'comment does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            
         
     def delete_comment(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
@@ -36,6 +48,19 @@ class FeedbackMixin:
             if not like_obj.like:
                 msg = 'unliked'
             return Response(f'You {msg} it')
+        except:
+            return Response('Something went wrong')
+        
+    
+    def like_comment(self, request, pk=None, *args, **kwargs):
+        try:
+            like_com, _ = LikeComment.objects.get_or_create(owner=request.user, comment_id=pk)
+            like_com.like = not like_com.like
+            like_com.save()
+            msg = 'liked'
+            if not like_com.like:
+                msg = 'unliked'
+            return Response(f'You {msg} this comment')
         except:
             return Response('Something went wrong')
         

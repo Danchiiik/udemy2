@@ -15,7 +15,15 @@ class Comment(models.Model):
     def __str__(self):
         return f'{self.owner} - {self.comment[:7]}...' 
     
+class LikeComment(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes_com')
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes_com')
+    like = models.BooleanField(default=False)
+      
+    def __str__(self) -> str:
+        return f'{self.owner} - {str(self.like)}'
     
+
 class Rating(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
     product = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='ratings')
