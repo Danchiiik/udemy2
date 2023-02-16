@@ -4,14 +4,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class Category(models.Model):
-    # CATEGORY = (
-    #     ('Frontend', 'Frontend'),
-    #     ('Backend', 'Backend'),
-    #     ('DevOps', 'DevOps'),
-    #     ('GameDEV', 'GameDev'),
-    #     ('IOSDev', 'IOSDev'),
-    #     ('AndroidDev', 'AndroidDev')
-    # )
     title = models.CharField(max_length=50, unique=True)
     sub_category = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     
@@ -47,5 +39,28 @@ class Course(models.Model):
     def __str__(self) -> str:
         return self.title
     
+     
+class CourseItem(models.Model):
+    product = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_item')
+    title = models.CharField(max_length=50)
+    description = models.TextField(null=True, blank=True)
     
+    def __str__(self) -> str:
+        return self.title
+    
+    
+class CourseItemFile(models.Model):
+    course_item = models.ForeignKey(CourseItem, on_delete=models.CASCADE, related_name='course_item_file')
+    file = models.CharField(max_length=150)
+    
+    def __str__(self) -> str:
+        return self.course_item.title
+
+
+class Archive(models.Model):
+    user = models.ForeignKey(User,  on_delete=models.CASCADE, related_name='users')
+    product = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='products')
+    
+    def __str__(self) -> str:
+        return f'{self.user.email} - {self.product.title}'
     

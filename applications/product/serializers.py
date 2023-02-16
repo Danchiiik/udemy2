@@ -3,7 +3,7 @@ from django.db.models import Avg
 from applications.feedback.models import Comment
 from applications.feedback.serializers import CommentSerializer
 
-from applications.product.models import Course
+from applications.product.models import Archive, Course, CourseItem, CourseItemFile
 
 class ProductSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.email')
@@ -14,7 +14,6 @@ class ProductSerializer(serializers.ModelSerializer):
         
         
     def create(self, validated_data):
-        # request = self.context.get('request')
         product = Course.objects.create(**validated_data)
         return product
     
@@ -29,3 +28,21 @@ class ProductSerializer(serializers.ModelSerializer):
         rep['comment'] = comments
         return rep
     
+    
+class CourseItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseItem
+        fields = '__all__'
+        
+    
+class CourseItemFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseItemFile
+        fields = '__all__'    
+
+
+class ArchiveSerailizer(serializers.ModelSerializer):
+    class Meta:
+        model = Archive
+        fields = '__all__'
+        

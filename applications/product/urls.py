@@ -1,10 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from applications.product.views import ProductViewSet
+from applications.product.views import ProductItemFileViewSet, ProductItemViewSet, ProductViewSet, ArchiveApiView
 
 router = DefaultRouter()
 
+router.register('archive', ArchiveApiView)
+router.register('course_item', ProductItemViewSet)
+router.register('course_item_file', ProductItemFileViewSet)
 router.register('', ProductViewSet)
 
 urlpatterns = [
