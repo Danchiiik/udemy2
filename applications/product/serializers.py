@@ -30,12 +30,14 @@ class ProductSerializer(serializers.ModelSerializer):
     
     
 class CourseItemSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.email')
     class Meta:
         model = CourseItem
         fields = '__all__'
         
     
 class CourseItemFileSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.email')
     class Meta:
         model = CourseItemFile
         fields = '__all__'    

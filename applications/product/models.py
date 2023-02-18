@@ -41,6 +41,7 @@ class Course(models.Model):
     
      
 class CourseItem(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='course_item')
     product = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_item')
     title = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)
@@ -50,6 +51,7 @@ class CourseItem(models.Model):
     
     
 class CourseItemFile(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='course_item_file')
     course_item = models.ForeignKey(CourseItem, on_delete=models.CASCADE, related_name='course_item_file')
     file = models.CharField(max_length=150)
     

@@ -21,7 +21,6 @@ class AccountTest(APITestCase):
     
     
     def test_create_user_account(self):
-        """ Тест на регистрацию студентов. """
         
         url = "http://127.0.0.1:8000/api/v1/account/register/"
         response = self.client.post(url, data={
@@ -38,8 +37,8 @@ class AccountTest(APITestCase):
             "Error. Please check email, password or first name and last name."
         )
     
+    
     def test_create_teacher_account(self):
-        """ Тест на регистрацию менторов. """
         
         url = "http://127.0.0.1:8000/api/v1/account/register/mentor/"
         response = self.client.post(url, data={
@@ -58,8 +57,8 @@ class AccountTest(APITestCase):
             "Error. Please check email, password or first name and last_name." 
         )
         
+        
     def test_login_account(self):
-        """ Тест на авторизацию пользователей. """
         
         url = 'http://127.0.0.1:8000/api/v1/account/login/'
         user = User.objects.create_user(
@@ -78,8 +77,8 @@ class AccountTest(APITestCase):
             "Error. Please check email or password."
         )
         
+        
     def test_change_password(self):
-        """ Тест на смену пароля пользователей. """
         
         url = 'http://127.0.0.1:8000/api/v1/account/change_password/'
         response = self.client.post(url, data={
@@ -95,12 +94,11 @@ class AccountTest(APITestCase):
             "Error. Please check passwords."    
         )
         
+        
     def test_forgot_password(self):
-        """ Тест на восстановление пароля, отправка сообщения на почту. """
         
         url = "http://127.0.0.1:8000/api/v1/account/forgot_password/"
         user = User.objects.create_user(
-            #? При создании пользователя чтобы получить письмо в тесте, укажите рабочую почту.
             email='dcabatar@gmail.com',
             password='123456',
             is_active=True,
