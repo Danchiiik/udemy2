@@ -18,6 +18,9 @@ from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 schema_view = get_schema_view(openapi.Info(
     title = 'Udemy-clone',
@@ -33,4 +36,4 @@ urlpatterns = [
     path('api/v1/account/', include('applications.account.urls')),
     path('api/v1/product/', include('applications.product.urls')),
     path('api/v1/order/', include('applications.order.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

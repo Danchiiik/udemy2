@@ -5,8 +5,32 @@ from applications.feedback.serializers import CommentSerializer
 
 from applications.product.models import Archive, Course, CourseItem, CourseItemFile
 
+    
+class CourseItemSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.email')
+    class Meta:
+        model = CourseItem
+        fields = '__all__'
+        
+    
+class CourseItemFileSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.email')
+    class Meta:
+        model = CourseItemFile
+        fields = '__all__'    
+
+
+class ArchiveSerailizer(serializers.ModelSerializer):
+    class Meta:
+        model = Archive
+        fields = '__all__'
+        
 class ProductSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.email')
+    description = serializers.CharField(min_length=200)
+    
+    course_items = CourseItemSerializer(many=True, read_only=True)
+    course_items_files = CourseItemFileSerializer(many=True, read_only=True)
     
     class Meta:
         model = Course
@@ -28,23 +52,3 @@ class ProductSerializer(serializers.ModelSerializer):
         rep['comment'] = comments
         return rep
     
-    
-class CourseItemSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source='author.email')
-    class Meta:
-        model = CourseItem
-        fields = '__all__'
-        
-    
-class CourseItemFileSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source='author.email')
-    class Meta:
-        model = CourseItemFile
-        fields = '__all__'    
-
-
-class ArchiveSerailizer(serializers.ModelSerializer):
-    class Meta:
-        model = Archive
-        fields = '__all__'
-        
