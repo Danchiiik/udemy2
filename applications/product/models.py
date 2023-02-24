@@ -118,14 +118,13 @@ class CourseItem(models.Model):
     
     
 class CourseItemFile(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='course_item_file')
     course_item = models.ForeignKey(CourseItem, on_delete=models.CASCADE, related_name='course_item_file')
-    file = models.FileField(upload_to='videos/')
+    files = models.FileField(upload_to='files/')
     
     def __str__(self) -> str:
-        return self.course_item.title
-
-
+        return f'{self.course_item.title} - {str(self.files)[6:]}'
+    
+    
 class Archive(models.Model):
     user = models.ForeignKey(User,  on_delete=models.CASCADE, related_name='users')
     product = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='products')
