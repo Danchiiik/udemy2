@@ -51,5 +51,15 @@ class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = '__all__'
+    
+    def to_representation(self, instance):
+        rep =  super().to_representation(instance)
+        rep['image'] = str(instance.product.image)
+        rep['title'] = instance.product.title
+        rep['mentor'] = instance.product.author.first_name
+        rep['rating'] = float(Rating.objects.get(product_id=instance.product.id).rating)
+        rep['review'] = Comment.objects.filter(product_id=instance.product.id).count()
+        rep['price'] = f'{int(instance.product.price)} {instance.product.currency}' 
         
-        
+        return rep
+
