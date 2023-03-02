@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from applications.feedback.models import Comment, Favourite, Like, LikeComment, Rating
 from django.contrib.auth import get_user_model
+from django.db.models import Avg
+
+from applications.feedback.models import Comment, Favourite, Like, LikeComment, Rating
 
 User = get_user_model()
 
@@ -57,9 +59,8 @@ class FavouriteSerializer(serializers.ModelSerializer):
         rep['image'] = str(instance.product.image)
         rep['title'] = instance.product.title
         rep['mentor'] = instance.product.author.first_name
-        rep['rating'] = float(Rating.objects.get(product_id=instance.product.id).rating)
+        rep['rating'] = round(Rating.objects.filter(product_id=instance.product.id).aggregate(Avg('rating'))['rating__avg'], 1)
         rep['review'] = Comment.objects.filter(product_id=instance.product.id).count()
         rep['price'] = f'{int(instance.product.price)} {instance.product.currency}' 
         
         return rep
-
