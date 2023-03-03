@@ -59,7 +59,10 @@ class FavouriteSerializer(serializers.ModelSerializer):
         rep['image'] = str(instance.product.image)
         rep['title'] = instance.product.title
         rep['mentor'] = instance.product.author.first_name
-        rep['rating'] = round(Rating.objects.filter(product_id=instance.product.id).aggregate(Avg('rating'))['rating__avg'], 1)
+        try:
+            rep['rating'] = round(Rating.objects.filter(product_id=instance.product.id).aggregate(Avg('rating'))['rating__avg'], 1)
+        except:
+            rep['rating'] = None 
         rep['review'] = Comment.objects.filter(product_id=instance.product.id).count()
         rep['price'] = f'{int(instance.product.price)} {instance.product.currency}' 
         
